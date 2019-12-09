@@ -1,16 +1,12 @@
 def mergeBack = false
 def targetBranch = 'master'
 
-node('docker') {
+node() {
   stage('checkout') {
     deleteDir()
     checkout scm
     if(env.BRANCH_NAME =~ "ready/*") {
       mergeBack = true
-//      withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'pass', usernameVariable: 'user')]) {
-//        sh "echo machine github.com login ${user} password ${pass} > ~/.netrc"
-//        sh "chmod 0600 ~/.netrc"
-//      }
       sh "git config remote.origin.fetch \"+refs/heads/*:refs/remotes/origin/*\""
       sh "git fetch origin ${targetBranch}"
       sh "git checkout -b ${targetBranch} origin/${targetBranch}"
